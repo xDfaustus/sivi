@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xSivi Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0} 
+:root{
+  color-scheme:light;
+  --bg:#f8eaf1;
+  --pink:#e9a9c8;
+  --pink-dark:#bd709d;
+  --lav:#c9b9e8;
+  --cream:#fff5e8;
+  --aqua:#a8e2df;
+  --mint:#cce8d7;
+  --ink:#45384f;
+  --muted:#7d7189;
+  --line:rgba(255,255,255,.65);
+}
+
+body{
+  min-height:100svh;
+  padding:24px 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow-x:hidden;
+  background:radial-gradient(circle at 15% 10%,#fff4f8 0,transparent 34%),linear-gradient(135deg,#f8dce9,#e6def8 52%,#d8f3ee);
+  font-family:'Noto Sans JP',sans-serif;
+  color:var(--ink);
+}
+
+/* ENVOLTORIO CON LUZ NEÓN MÁS GRUESA Y RÁPIDA (3.5s) */
+.canvas-wrapper {
+  position: relative;
+  width: min(95vw, 1200px);
+  border-radius: 22px;
+  padding: 6px; /* Borde más grueso */
+  overflow: hidden;
+  box-shadow: 0 0 35px rgba(233, 169, 200, 0.6), 0 24px 70px rgba(119,87,135,.35);
+  display: flex;
+}
+
+.canvas-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    transparent 0deg,
+    transparent 220deg,
+    #a8e2df 270deg,
+    #e9a9c8 310deg,
+    #ffffff 360deg
+  );
+  animation: rotate-border-light 3.5s linear infinite; /* Más rápido */
+  z-index: 0;
+}
+
+@keyframes rotate-border-light {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.canvas-container{
+  width: 100%;
+  min-height:620px;
+  aspect-ratio:16/9;
+  display:grid;
+  grid-template-columns:minmax(0,40fr) minmax(0,43fr) minmax(110px,17fr);
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  border-radius:18px;
+  background-image:linear-gradient(115deg,rgba(255,230,242,.58),rgba(223,226,255,.32)),url('https://i.ibb.co/LyzKtBH/Dise-o-sin-t-tulo.png');
+  background-size:cover;
+  background-position:center;
+  box-shadow:inset 0 0 70px rgba(255,255,255,.3);
+  z-index: 1;
+}
+
+.canvas-container:after{content:"";position:absolute;inset:0;z-index:12;pointer-events:none;background:radial-gradient(ellipse,transparent 45%,rgba(255,240,248,.22) 100%)}
+.canvas-dot-overlay{position:absolute;inset:0;z-index:2;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.4) 1px,transparent 1.5px);background-size:8px 8px;opacity:.5}
+.ui-corner-bracket{position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,.9);z-index:13;pointer-events:none}.top-left{top:18px;left:18px;border-right:0;border-bottom:0}.bottom-right{bottom:18px;right:18px;border-left:0;border-top:0}
+.nihility-bg-text{position:absolute;top:45%;left:0;width:200%;transform:translateY(-50%);font:700 10rem 'Syncopate',sans-serif;color:rgba(189,112,157,.08);letter-spacing:25px;white-space:nowrap;z-index:1;pointer-events:none;animation:move-nihility 35s linear infinite}
+#petals-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:11;pointer-events:none}
+
+/* LÍNEA DIAGONAL MÁS GRUESA (160px) Y TEXTOS REPOSICIONADOS */
+.diagonal-stripe-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.diagonal-stripe {
+  position: absolute;
+  width: 200%;
+  height: 160px; /* Aún más gruesa */
+  transform: rotate(-28deg);
+  background: linear-gradient(90deg, #ff9acb, #c5a4ff, #8fe8e1, #fff0a8, #ff9acb);
+  background-size: 300% 100%;
+  animation: stripe-gradient 4s linear infinite;
+  box-shadow: 0 0 50px rgba(233,169,200,.8), inset 0 0 25px rgba(255,255,255,.95);
+  opacity: 0.92;
+  border-top: 5px solid rgba(255,255,255,.95);
+  border-bottom: 5px solid rgba(255,255,255,.95);
+}
+
+@keyframes stripe-gradient {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+.floryn-text-stream {
+  position: absolute;
+  width: 200%;
+  height: 50px;
+  transform: rotate(-28deg);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  pointer-events: none;
+  white-space: nowrap;
+  font-family: 'Syncopate', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 12px;
+  color: rgba(255, 255, 255, 0.98);
+  text-shadow: 0 0 15px rgba(189, 112, 157, 0.9);
+}
+
+/* Reposicionados para no ser tapados por la franja de 160px */
+.floryn-text-stream.top-stream {
+  margin-top: -190px;
+}
+
+.floryn-text-stream.bottom-stream {
+  margin-top: 190px;
+}
+
+.floryn-track {
+  display: flex;
+  gap: 60px;
+  animation: move-up-stream 9s linear infinite;
+}
+
+@keyframes move-up-stream {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* LEFT PANEL */
+.left-panel{padding:7% 7%;display:flex;flex-direction:column;justify-content:space-between;position:relative;z-index:5;background:linear-gradient(90deg,rgba(255,245,250,.87),rgba(255,238,247,.58) 76%,transparent)}
+.hero-quote-header{font-size:.72rem;font-weight:900;color:#74627e;letter-spacing:1.5px;line-height:1.6;text-transform:uppercase;border-left:3px solid var(--pink-dark);padding-left:10px}.quote-jp{font-size:.62rem;color:#8b7b98;display:block;margin-top:5px;letter-spacing:.5px}
+.main-title-group{position:relative;margin-top:15px;z-index:5}.japanese-sub{font-size:.8rem;color:#9c6f9f;font-weight:900;letter-spacing:4px;margin-bottom:9px;display:block}
+
+.main-kanji{
+  margin:0;
+  font-size:clamp(2.8rem,6.8vw,6.1rem);
+  font-weight:900;
+  line-height:1;
+  letter-spacing:-2px;
+  display:inline-block;
+  color:transparent;
+  background:linear-gradient(120deg,#c77da9,#9d8bd0 25%,#71bdbb 50%,#f1a7a6 75%,#c77da9 100%);
+  background-size:200% 200%;
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter: drop-shadow(0 0 12px rgba(233,169,200,.4));
+  animation:pastel-shift 6s ease-in-out infinite;
+  cursor:pointer;
+}
+.main-kanji:hover{animation:pastel-shift 1.3s ease-in-out infinite}
+
+.numeric-badge{display:inline-block;background:rgba(255,249,235,.9);color:#7e6684;border:1px solid rgba(255,255,255,.9);padding:4px 14px;font-size:.72rem;font-weight:bold;letter-spacing:3px;margin-top:12px;box-shadow:0 4px 15px rgba(143,107,158,.12);border-radius:6px}
+
+/* REPRODUCTOR MÁS COMPACTO Y MENOS LARGO */
+.music-player{
+  max-width: 280px; /* Reducido para no verse tan largo */
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-left: 3px solid var(--pink-dark);
+  padding: 10px 12px;
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  backdrop-filter: blur(16px);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(143,107,158,.12);
+  transition: all .3s ease;
+}
+.music-player.is-playing{
+  border-color: rgba(255, 255, 255, 0.95);
+  border-left-color: #8fe8e1;
+  box-shadow: 0 10px 30px rgba(143,107,158,.2);
+}
+.player-info,.player-controls{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.track-title{
+  font-size: .62rem;
+  font-weight: 900;
+  color: #574762;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 60%;
+}
+.time-display{font-size:.55rem;font-family:monospace;color:#8b7b98;font-weight:bold}
+.progress-container{
+  width:100%;
+  height:5px;
+  background:rgba(173,150,192,.25);
+  position:relative;
+  cursor:pointer;
+  touch-action:none;
+  border-radius:10px;
+  overflow:hidden;
+}
+.progress-bar{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#ff9acb,#c5a4ff,#8fe8e1,#fff0a8,#ff9acb);
+  background-size:200% 100%;
+  position:absolute;
+  top:0;
+  left:0;
+  border-radius:10px;
+  animation:rainbow-progress 4s linear infinite;
+  box-shadow:0 0 8px rgba(201,185,232,.6);
+}
+.play-btn{
+  background: linear-gradient(135deg, rgba(233,169,200,.85), rgba(201,185,232,.85));
+  border: 1px solid rgba(255,255,255,.9);
+  color: #fff;
+  padding: 5px 14px;
+  font-size: .58rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  text-transform: uppercase;
+  border-radius: 20px;
+  box-shadow: 0 3px 10px rgba(189,112,157,.25);
+  transition: all .25s;
+}
+.play-btn:hover{
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(189,112,157,.4);
+  background: linear-gradient(135deg, rgba(233,169,200,1), rgba(168,226,223,1));
+}
+.volume-container{display:flex;align-items:center;gap:6px}
+.volume-label{font-size:.52rem;color:#8c7d98;font-family:monospace}
+.volume-slider{appearance:none;width:55px;height:4px;background:rgba(173,150,192,.3);border-radius:5px;cursor:pointer}
+.volume-slider::-webkit-slider-thumb{appearance:none;width:10px;height:10px;background:var(--pink-dark);border-radius:50%}
+
+/* CENTER PANEL */
+.center-panel{position:relative;display:flex;align-items:center;justify-content:center;z-index:4;min-width:0}
+
+/* PERSONAJE */
+.character-root{ position: absolute;width: 126%;height: 135%;bottom: 0;left: -13%;z-index: 10;pointer-events: none;will-change: transform;isolation: isolate; }
+.character-img{width:100%;height:100%;object-fit:contain;object-position:bottom center;filter:drop-shadow(0 15px 25px rgba(115,86,139,.28)) drop-shadow(0 0 35px rgba(225,159,202,.22));animation:float-character 6s ease-in-out infinite;position:relative;z-index:2}
+.glitch-layer{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:bottom center;opacity:0;pointer-events:none;z-index:3;mix-blend-mode:screen}
+.glitch-cyan{filter:brightness(1.12) sepia(.2) saturate(2) hue-rotate(125deg);animation:glitch-cyan 4.8s steps(1,end) infinite}
+.glitch-pink{filter:brightness(1.1) sepia(.25) saturate(2.5) hue-rotate(275deg);animation:glitch-pink 4.8s steps(1,end) infinite}
+
+/* RIGHT PANEL */
+.right-panel{background:linear-gradient(-90deg,rgba(255,245,250,.58),rgba(255,245,250,.12));padding:35px 10px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;color:var(--ink);position:relative;z-index:15}
+.friends-trigger{appearance:none;border:1px solid rgba(189,112,157,.65);border-radius:20px;padding:8px 11px;background:rgba(255,250,253,.8);color:#986a9c;font:700 .55rem/1 'Noto Sans JP',sans-serif;letter-spacing:1px;cursor:pointer;white-space:nowrap;transition:.25s;position:relative;z-index:2}.friends-trigger:hover,.friends-trigger[aria-expanded=true]{background:#f4d7e8;border-color:#bd709d;transform:translateY(-1px)}
+
+/* PANEL DE FRIENDS CON BORDES NEÓN Y SIN SCROLLBARS (ESTÁTICO/LIMPIO) */
+.friends-panel {
+  position: absolute;
+  z-index: 30;
+  top: 50%;
+  right: 8.5%;
+  transform: translateY(-50%);
+  width: min(430px, 68%);
+  max-height: 84%;
+  overflow: auto;
+  padding: 5px; /* Luz neón más gruesa */
+  border-radius: 20px;
+  background: transparent;
+  box-shadow: 0 0 30px rgba(233,169,200,.6), 0 22px 65px rgba(119,87,135,.25);
+  backdrop-filter: blur(16px);
+  /* Eliminar barras de movimiento (scrollbars) */
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
+}
+
+.friends-panel::-webkit-scrollbar {
+  display: none; /* Oculta la barra en Chrome, Safari y Edge */
+}
+
+.friends-panel::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    transparent 0deg,
+    transparent 220deg,
+    #a8e2df 270deg,
+    #e9a9c8 310deg,
+    #ffffff 360deg
+  );
+  animation: rotate-border-light 3.5s linear infinite; /* Animación más rápida */
+  z-index: -1;
+}
+
+.friends-panel-content {
+  background: linear-gradient(145deg, rgba(255,246,251,.97), rgba(235,229,250,.97));
+  border: 1px solid rgba(255,255,255,.95);
+  border-radius: 16px;
+  padding: 22px;
+  color: #574762;
+  position: relative;
+  overflow: hidden;
+}
+
+.friends-panel[hidden]{display:none!important}
+.friends-panel-content:before,.friends-panel-content:after{content:"";position:absolute;width:15px;height:15px;pointer-events:none}
+.friends-panel-content:before{top:7px;left:7px;border-top:1px solid var(--pink-dark);border-left:1px solid var(--pink-dark)}
+.friends-panel-content:after{right:7px;bottom:7px;border-right:1px solid var(--pink-dark);border-bottom:1px solid var(--pink-dark)}
+.friends-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(189,112,157,.28)}
+.friends-eyebrow{display:block;margin-bottom:5px;color:#a875aa;font-size:.55rem;letter-spacing:2px}
+.friends-heading{font-family:'Syncopate',sans-serif;font-size:clamp(.9rem,1.8vw,1.25rem);line-height:1.3;letter-spacing:1px}
+.friends-heading span{color:transparent;-webkit-text-stroke:.7px #bd709d}
+.friends-close{flex:0 0 auto;width:30px;height:30px;border:1px solid rgba(157,128,172,.4);border-radius:8px;background:rgba(255,255,255,.5);color:#80638e;font-size:1.1rem;cursor:pointer}
+.friends-close:hover{background:#f4d7e8}
+.friends-trigger:focus-visible,.friends-close:focus-visible,.friend-card a:focus-visible{outline:2px solid #bd709d;outline-offset:3px}
+.friends-intro{margin:-3px 0 15px;max-width:330px;color:#897992;font-size:.65rem;line-height:1.6}
+.friends-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+
+.friend-card{min-width:0;display:flex;align-items:center;gap:9px;padding:9px;border:1px solid rgba(189,112,157,.25);background:rgba(255,255,255,.48);border-radius:10px;position:relative;overflow:hidden;transition:border-color .3s,background .3s,transform .3s}
+.friend-card:hover{border-color:rgba(189,112,157,.75);background:rgba(255,255,255,.85);transform:translateY(-2px)}
+
+/* IMÁGENES / AVATARES DE AMIGOS CON EFECTO NEÓN GIRATORIO */
+.friend-avatar {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 54px;
+  border-radius: 8px;
+  position: relative;
+  padding: 2px; /* Borde de luz */
+  overflow: hidden;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.friend-avatar::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    transparent 0deg,
+    #a8e2df 120deg,
+    #e9a9c8 240deg,
+    #ffffff 360deg
+  );
+  animation: rotate-border-light 3s linear infinite;
+  z-index: 0;
+}
+
+.friend-avatar-img {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.friend-card:hover .friend-avatar{transform:scale(1.05)}
+.friend-role{color:#a875aa;font-size:.5rem;line-height:1.4;letter-spacing:.7px;text-transform:uppercase;margin-bottom:3px}
+.friend-name{display:block;color:#574762;font-size:.65rem;line-height:1.35;font-weight:900;text-decoration:none;overflow-wrap:anywhere}
+.friend-meta{margin-top:4px;color:#92839c;font-size:.53rem;line-height:1.4}
+.friends-panel-foot{display:flex;justify-content:space-between;gap:10px;margin-top:15px;padding-top:10px;border-top:1px solid rgba(157,128,172,.2);color:#998aa3;font-size:.5rem;letter-spacing:1px}
+
+.vertical-text-wrap{display:flex;flex-direction:column;align-items:center;gap:13px}.v-kanji-title{writing-mode:vertical-rl;font-size:2rem;font-weight:900;letter-spacing:8px;color:#a47fae;text-shadow:0 4px 10px rgba(255,255,255,.5)}.v-latin-sub{writing-mode:vertical-rl;font-size:.62rem;letter-spacing:4px;color:#95859f}.diamond{color:#c88db7;font-size:.8rem;animation:pulse-glow 2s infinite ease-in-out}.panel-footer-stamp{text-align:center}.micro-japanese{font-size:.43rem;letter-spacing:2px;color:#a69aac;writing-mode:vertical-rl;transform:rotate(180deg);margin-top:8px}
+
+@keyframes rainbow-progress{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes glitch-cyan{0%,87%,100%{opacity:0;transform:translate(0,0);clip-path:inset(0 0 0 0)}88%{opacity:.55;transform:translate(-5px,1px);clip-path:inset(12% 0 67% 0)}90%{opacity:.28;transform:translate(4px,-1px);clip-path:inset(52% 0 28% 0)}92%{opacity:0}}
+@keyframes glitch-pink{0%,89%,100%{opacity:0;transform:translate(0,0);clip-path:inset(0 0 0 0)}90%{opacity:.5;transform:translate(5px,-1px);clip-path:inset(35% 0 45% 0)}91%{opacity:.25;transform:translate(-3px,1px);clip-path:inset(72% 0 10% 0)}93%{opacity:0}}
+@keyframes move-nihility{0%{transform:translate(0,-50%)}100%{transform:translate(-50%,-50%)}}
+@keyframes float-character{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes pastel-shift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes pulse-glow{0%,100%{opacity:.45;transform:scale(.9)}50%{opacity:1;transform:scale(1.1)}}
+
+@media(max-width:900px){
+  body{align-items:flex-start}
+  .canvas-wrapper{width:min(96vw,760px);}
+  .canvas-container{min-height:620px;max-height:none;aspect-ratio:auto;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 76px}
+  .left-panel{padding:28px 18px}
+  .main-kanji{font-size:clamp(3rem,8vw,5rem)}
+  .music-player{padding:10px;margin-top:22px;max-width:100%}
+  .right-panel{padding:28px 6px}
+  .v-kanji-title{font-size:1.6rem}
+  .nihility-bg-text{font-size:7rem}
+  .friends-panel{width:min(430px,78%)}
+}
+@media(max-width:600px){
+  body{padding:12px 0}
+  .canvas-wrapper{width:calc(100vw - 24px);}
+  .canvas-container{display:flex;flex-direction:column;min-height:0;aspect-ratio:auto;overflow:hidden}
+  .center-panel{order:1;height:52vh;min-height:290px}
+  .left-panel{order:2;gap:24px;padding:24px 18px}
+  .right-panel{order:3;flex-direction:row;justify-content:space-between;padding:15px 20px;min-height:70px}
+  .vertical-text-wrap{flex-direction:row;gap:9px}
+  .v-kanji-title,.v-latin-sub,.micro-japanese{writing-mode:horizontal-tb;transform:none;letter-spacing:2px}
+  .v-kanji-title{font-size:1.1rem}
+  .v-latin-sub{font-size:.52rem}
+  .panel-footer-stamp{display:none}
+  .character-root{width:120%;height:110%;left:-10%}
+  .left-footer{gap:10px;flex-wrap:wrap}
+  .game-meta{font-size:.52rem}
+  .hero-quote-header{font-size:.64rem}
+  .main-kanji{font-size:clamp(3.1rem,17vw,5.4rem)}
+  .nihility-bg-text{font-size:5rem}
+  .ui-corner-bracket{width:12px;height:12px}
+  .friends-panel{top:50%;left:50%;right:auto;transform:translate(-50%,-50%);width:calc(100% - 24px);max-height:80%;padding:17px 13px}
+  .friends-grid{gap:7px}
+  .friend-card{gap:6px;padding:7px 5px}
+  .friend-avatar{flex-basis:38px;width:38px;height:45px}
+  .friend-name{font-size:.59rem}
+  .friend-meta{font-size:.49rem}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<div class="canvas-wrapper">
+  <div class="canvas-container" id="main-canvas">
+    <div class="canvas-dot-overlay"></div>
+    <div class="ui-corner-bracket top-left"></div>
+    <div class="ui-corner-bracket bottom-right"></div>
+    
+    <div class="nihility-bg-text" aria-hidden="true">FLORYN FLORYN FLORYN</div>
+    <canvas id="petals-canvas" aria-hidden="true"></canvas>
+
+    <!-- DECORACIÓN DIAGONAL GRUESA (160px) CON TEXTOS FLORYN BIEN POSICIONADOS -->
+    <div class="diagonal-stripe-container">
+      <div class="floryn-text-stream top-stream">
+        <div class="floryn-track">
+          <span>FLORYN</span><span>FLORYN</span><span>FLORYN</span><span>FLORYN</span><span>FLORYN</span><span>FLORYN</span>
+        </div>
+        <div class="floryn-track" aria-hidden="true">
+          <span>FLORYN</span><span>FLORYN</span><span>FLORYN</span><span>FLORYN</span><span>FLORYN</span><span>FLORYN</span>
+        </div>
+      </div>
+
+      <div class="diagonal-stripe"></div>
+
+      <div class="floryn-text-stream bottom-stream">
+        <div class="floryn-track">
+          <span>FLORYN</span><span>FLORYN</span><span>FLORYN</span><span>FLORYN</span><span>FLORYN</span><span>FLORYN</span>
+        </div>
+        <div class="floryn-track" aria-hidden="true">
+          <span>FLORYN</span><span>FLORYN</span><span>FLORYN</span><span>FLORYN</span><span>FLORYN</span><span>FLORYN</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- LEFT PANEL -->
+    <section class="left-panel">
+      <div class="hero-quote-header"><span class="quote-jp"></span></div>
+      <div class="main-title-group">
+        <span class="japanese-sub"></span>
+        <h1 class="main-kanji">xSivi</h1><br>
+        <div class="numeric-badge">306281691</div>
+        
+        <!-- REPRODUCTOR MÁS PEQUEÑO Y COMPACTO -->
+        <div class="music-player" id="player-card">
+          <audio id="audio-element" src="assets/0.mp3" class="cancion active" preload="metadata"></audio>
+          <div class="player-info">
+            <span class="track-title" id="track-name">Fall To Hell - DOLLWAVE</span>
+            <span class="time-display" id="time-track">0:00 / 0:00</span>
+          </div>
+          <div class="progress-container" id="progress-cont">
+            <div class="progress-bar" id="progress-actual"></div>
+          </div>
+          <div class="player-controls">
+            <button class="play-btn" id="play-trigger" type="button" aria-label="Reproducir música">Play</button>
+            <div class="volume-container">
+              <label class="volume-label" for="vol-slider">VOL</label>
+              <input type="range" class="volume-slider" id="vol-slider" min="0" max="1" step="0.05" value="0.5" aria-label="Volumen">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- CENTER PANEL -->
+    <section class="center-panel">
+      <div class="character-root" id="character-layer">
+        <img src="https://i.ibb.co/cKKvjyrG/Dise-o-sin-t-tulo-1.png" alt="" aria-hidden="true" class="glitch-layer glitch-cyan">
+        <img src="https://i.ibb.co/cKKvjyrG/Dise-o-sin-t-tulo-1.png" alt="" aria-hidden="true" class="glitch-layer glitch-pink">
+        <img src="https://i.ibb.co/cKKvjyrG/Dise-o-sin-t-tulo-1.png" alt="Personaje principal" class="character-img">
+      </div>
+    </section>
+    
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel">
+      <button class="friends-trigger" id="friends-trigger" type="button" aria-expanded="false" aria-controls="friends-panel">FRIENDS +</button>
+      <div class="vertical-text-wrap">
+        <span class="v-kanji-title"></span>
+        <span class="v-latin-sub"></span>
+        <span class="diamond">◆</span>
+        <span class="v-latin-sub"></span>
+      </div>
+      <div class="panel-footer-stamp">
+        <div style="color:rgba(164,127,174,.45);font-size:10px">—</div>
+        <p class="micro-japanese"></p>
+      </div>
+    </aside>
+
+    <!-- FRIENDS PANEL LÍMPIDO Y SIN SCROLLBARS -->
+    <section class="friends-panel" id="friends-panel" aria-labelledby="friends-title" hidden>
+      <div class="friends-panel-content">
+        <div class="friends-panel-head">
+          <div>
+            <span class="friends-eyebrow"></span>
+            <h2 class="friends-heading" id="friends-title">FR<span>IE</span>NDS</h2>
+          </div>
+          <button class="friends-close" id="friends-close" type="button" aria-label="Cerrar Friends">×</button>
+        </div>
+        <p class="friends-intro">.</p>
+        <div class="friends-grid">
+          <article class="friend-card">
+            <div class="friend-avatar">
+              <div class="friend-avatar-img" style="background-image:url('https://i.ibb.co/5gg3QHh4/Dise-o-sin-t-tulo-8.png')" role="img" aria-label="Retrato de Soley Rocca"></div>
+            </div>
+            <div><div class="friend-role">Married</div><a class="friend-name" href="https://xat.me/xShirou">Shirou</a><div class="friend-meta"></div></div>
+          </article>
+          <article class="friend-card">
+            <div class="friend-avatar">
+              <div class="friend-avatar-img" style="background-image:url('https://i.ibb.co/wJZLQSL/image.png')" role="img" aria-label="Retrato de Sasha Lee"></div>
+            </div>
+            <div><div class="friend-role">BEFI</div><a class="friend-name" href="https://xat.me/Nyxess">Gab</a><div class="friend-meta"></div></div>
+          </article>
+          <article class="friend-card">
+            <div class="friend-avatar">
+              <div class="friend-avatar-img" style="background-image:url('https://i.ibb.co/BZHdt3T/Sata.png')" role="img" aria-label="Retrato de Nene Hamilton"></div>
+            </div>
+            <div><div class="friend-role">Friend</div><a class="friend-name" href="https://xat.me/Dazai">Riun</a><div class="friend-meta"></div></div>
+          </article>
+          <article class="friend-card">
+            <div class="friend-avatar">
+              <div class="friend-avatar-img" style="background-image:url('https://u.cubeupload.com/Sivi/sin.png')" role="img" aria-label="Retrato de Barani Tosh"></div>
+            </div>
+            <div><div class="friend-role">Friend</div><a class="friend-name" href="https://xat.me/Frieren">Sinbi</a><div class="friend-meta"></div></div>
+          </article>
+          <article class="friend-card">
+            <div class="friend-avatar">
+              <div class="friend-avatar-img" style="background-image:URL(https://u.cubeupload.com/Sivi/terizla.png)" role="img" aria-label="Avatar pastel de Mika Sato"></div>
+            </div>
+            <div><div class="friend-role">Friend</div><a class="friend-name" href="#">kire</a><div class="friend-meta"></div></div>
+          </article>
+          <article class="friend-card">
+            <div class="friend-avatar">
+              <div class="friend-avatar-img" style="background-image:url()" role="img" aria-label="Avatar pastel de Rei Takao"></div>
+            </div>
+            <div><div class="friend-role">Friend</div><a class="friend-name" href="#"Shurita</a><div class="friend-meta"></div></div>
+          </article>
+        </div>
+        <div class="friends-panel-foot"><span></span><span></span></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {'use strict';
+const mainCanvas=document.getElementById('main-canvas'),charLayer=document.getElementById('character-layer'),audio=document.getElementById('audio-element'),playBtn=document.getElementById('play-trigger'),playerCard=document.getElementById('player-card'),progressContainer=document.getElementById('progress-cont'),progressBar=document.getElementById('progress-actual'),timeDisplay=document.getElementById('time-track'),volumeSlider=document.getElementById('vol-slider'),petalCanvas=document.getElementById('petals-canvas'),ctx=petalCanvas.getContext('2d'),reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)'),friendsTrigger=document.getElementById('friends-trigger'),friendsPanel=document.getElementById('friends-panel'),friendsClose=document.getElementById('friends-close');
+
+function setFriendsOpen(open){friendsPanel.hidden=!open;friendsTrigger.setAttribute('aria-expanded',String(open));if(open)friendsClose.focus();else friendsTrigger.focus()}
+friendsTrigger.addEventListener('click',()=>setFriendsOpen(friendsPanel.hidden));
+friendsClose.addEventListener('click',()=>setFriendsOpen(false));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!friendsPanel.hidden)setFriendsOpen(false)});
+document.addEventListener('pointerdown',e=>{if(!friendsPanel.hidden&&!friendsPanel.contains(e.target)&&!friendsTrigger.contains(e.target))setFriendsOpen(false)});
+friendsPanel.querySelectorAll('a[href="#"]').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+
+let mouseX=0,mouseY=0,charX=0,charY=0,petalsParamX=0,parallaxFrame=0;
+const canHover=window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+function updateParallax(){
+  charX+=(mouseX*18-charX)*.08;
+  charY+=(mouseY*12-charY)*.08;
+  petalsParamX+=(-mouseX*10-petalsParamX)*.05;
+  charLayer.style.transform=`translate3d(${charX}px,${charY}px,0)`;
+  parallaxFrame=requestAnimationFrame(updateParallax)
+}
+
+if(canHover&&!reducedMotion.matches){
+  mainCanvas.addEventListener('pointermove',e=>{
+    const r=mainCanvas.getBoundingClientRect();
+    mouseX=Math.max(-1,Math.min(1,((e.clientX-r.left)/r.width-.5)*2));
+    mouseY=Math.max(-1,Math.min(1,((e.clientY-r.top)/r.height-.5)*2))
+  });
+  mainCanvas.addEventListener('pointerleave',()=>{mouseX=0;mouseY=0});
+  parallaxFrame=requestAnimationFrame(updateParallax)
+}
+
+const petals=[],maxPetals=reducedMotion.matches?0:30,colors=['rgba(232,169,200,.58)','rgba(201,185,232,.58)','rgba(168,226,223,.52)','rgba(255,245,232,.75)'];
+function resizeCanvas(){
+  const r=mainCanvas.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);
+  petalCanvas.width=Math.round(r.width*dpr);
+  petalCanvas.height=Math.round(r.height*dpr);
+  petalCanvas.style.width=`${r.width}px`;
+  petalCanvas.style.height=`${r.height}px`;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  petals.forEach(p=>{p.x=Math.min(p.x,r.width);p.y=Math.min(p.y,r.height)})
+}
+
+class Petal{
+  constructor(){this.reset(true)}
+  reset(randomY=false){
+    const r=mainCanvas.getBoundingClientRect();
+    this.x=Math.random()*Math.max(r.width,1);
+    this.y=randomY?Math.random()*Math.max(r.height,1):-12;
+    this.size=Math.random()*5+3;
+    this.speedY=Math.random()*.7+.3;
+    this.speedX=Math.random()*.4-.2;
+    this.angle=Math.random()*360;
+    this.spin=Math.random()*.8-.4;
+    this.color=colors[Math.floor(Math.random()*colors.length)]
+  }
+  update(){
+    const r=mainCanvas.getBoundingClientRect();
+    this.y+=this.speedY;
+    this.x+=this.speedX+Math.sin(this.y/40)*.25+petalsParamX*.02;
+    this.angle+=this.spin;
+    if(this.y>r.height+12||this.x< -15||this.x>r.width+15)this.reset()
+  }
+  draw(){
+    ctx.save();
+    ctx.translate(this.x,this.y);
+    ctx.rotate(this.angle*Math.PI/180);
+    ctx.fillStyle=this.color;
+    ctx.beginPath();
+    ctx.ellipse(0,0,this.size,this.size/1.8,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.restore()
+  }
+}
+
+for(let i=0;i<maxPetals;i++)petals.push(new Petal());
+let petalsFrame=0;
+function animatePetals(){
+  const r=mainCanvas.getBoundingClientRect();
+  ctx.clearRect(0,0,r.width,r.height);
+  for(const p of petals){p.update();p.draw()}
+  if(petals.length)petalsFrame=requestAnimationFrame(animatePetals)
+}
+resizeCanvas();
+if(petals.length)animatePetals();
+if('ResizeObserver'in window)new ResizeObserver(resizeCanvas).observe(mainCanvas);
+else window.addEventListener('resize',resizeCanvas,{passive:true});
+
+audio.volume=Number(volumeSlider.value);
+progressContainer.setAttribute('role','slider');
+progressContainer.setAttribute('tabindex','0');
+progressContainer.setAttribute('aria-label','Posición de reproducción');
+progressContainer.setAttribute('aria-valuemin','0');
+progressContainer.setAttribute('aria-valuemax','100');
+
+function formatTime(s){if(!Number.isFinite(s)||s<0)return'0:00';return`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`}
+function syncPlayerState(){const playing=!audio.paused&&!audio.ended;playBtn.textContent=playing?'Pause':'Play';playBtn.setAttribute('aria-label',playing?'Pausar música':'Reproducir música');playerCard.classList.toggle('is-playing',playing)}
+function updateProgress(){const d=audio.duration,valid=Number.isFinite(d)&&d>0,p=valid?Math.min(100,Math.max(0,audio.currentTime/d*100)):0;progressBar.style.width=`${p}%`;progressContainer.setAttribute('aria-valuenow',String(Math.round(p)));timeDisplay.textContent=`${formatTime(audio.currentTime)} / ${formatTime(valid?d:0)}`}
+
+playBtn.addEventListener('click',async()=>{if(audio.paused){try{await audio.play()}catch(err){console.error('No se pudo reproducir el audio:',err);playBtn.textContent='Retry'}}else audio.pause();syncPlayerState()});
+function seek(x){if(!Number.isFinite(audio.duration)||audio.duration<=0)return;const r=progressContainer.getBoundingClientRect();audio.currentTime=Math.max(0,Math.min(1,(x-r.left)/r.width))*audio.duration;updateProgress()}
+progressContainer.addEventListener('pointerdown',e=>{seek(e.clientX);if(progressContainer.setPointerCapture)progressContainer.setPointerCapture(e.pointerId)});
+progressContainer.addEventListener('pointermove',e=>{if(e.buttons===1)seek(e.clientX)});
+progressContainer.addEventListener('keydown',e=>{if(!Number.isFinite(audio.duration)||audio.duration<=0)return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();audio.currentTime=Math.max(0,Math.min(audio.duration,audio.currentTime+(e.key==='ArrowRight'?5:-5)));updateProgress()}else if(e.key==='Home'){audio.currentTime=0;updateProgress()}else if(e.key==='End'){audio.currentTime=audio.duration;updateProgress()}});
+volumeSlider.addEventListener('input',()=>audio.volume=Number(volumeSlider.value));
+['timeupdate','loadedmetadata','durationchange'].forEach(ev=>audio.addEventListener(ev,updateProgress));
+['play','pause'].forEach(ev=>audio.addEventListener(ev,syncPlayerState));
+audio.addEventListener('ended',()=>{syncPlayerState();updateProgress()});
+audio.addEventListener('error',()=>{playBtn.textContent='Unavailable';playBtn.setAttribute('aria-label','Audio no disponible');playerCard.classList.remove('is-playing')});
+syncPlayerState();
+updateProgress();
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){
+    if(parallaxFrame)cancelAnimationFrame(parallaxFrame);
+    if(petalsFrame)cancelAnimationFrame(petalsFrame)
+  }else{
+    if(canHover&&!reducedMotion.matches)parallaxFrame=requestAnimationFrame(updateParallax);
+    if(petals.length)petalsFrame=requestAnimationFrame(animatePetals)
+  }
+});
+})();
+</script>
+</body>
+</html>
